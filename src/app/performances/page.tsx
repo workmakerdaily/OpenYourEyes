@@ -18,26 +18,55 @@ const genreMapping: Record<string, string> = {
     "뮤지컬": "GGGA",
 };
 
+const areaMapping: Record<string, string> = {
+    "서울특별시": "11",
+    "부산광역시": "26",
+    "대구광역시": "27",
+    "인천광역시": "28",
+    "광주광역시": "29",
+    "대전광역시": "30",
+    "울산광역시": "31",
+    "세종특별자치시": "36",
+    "경기도": "41",
+    "강원특별자치도": "51",
+    "충청북도": "43",
+    "충청남도": "44",
+    "전라북도": "45",
+    "전라남도": "46",
+    "경상북도": "47",
+    "경상남도": "48",
+    "제주특별자치도": "50",
+}
+
+const statusMapping: Record<string, string> = {
+    "공연예정": "01",
+    "공연중": "02",
+    "공연완료": "03",
+}
+
+
 const genreOptions = [
     { label: "전체", value: "" },
-    { label: "연극", value: "AAAA" },
-    { label: "무용(서양/한국무용)", value: "BBBC" },
-    { label: "대중무용", value: "BBBE" },
-    { label: "서양음악(클래식)", value: "CCCA" },
-    { label: "한국음악(국악)", value: "CCCC" },
-    { label: "대중음악", value: "CCCD" },
-    { label: "북한", value: "EEEA" },
-    { label: "서커스/마술", value: "EEEB" },
-    { label: "뮤지컬", value: "GGGA" },
+    ...Object.entries(genreMapping).map(([label, value]) => ({ label, value })),
+];
+
+const areaOptions = [
+    { label: "전체", value: "" },
+    ...Object.entries(areaMapping).map(([label, value]) => ({ label, value })),
+];
+
+const statusOptions = [
+    { label: "전체", value: "" },
+    ...Object.entries(statusMapping).map(([label, value]) => ({ label, value })),
 ];
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function PerformancesPage() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [genre, setGenre] = useState(""); // 🔹 장르 필터 추가
-    const [region, setRegion] = useState("");
-    const [status, setStatus] = useState("");
+    const [genre, setGenre] = useState("");     // 장르 필터
+    const [area, setArea] = useState("");       // 지역 필터
+    const [status, setStatus] = useState("");   // 상태 필터
     const [selectedDate, setSelectedDate] = useState("20250208");
 
     // 🔹 SWR Infinite Key 설정 (필터만 API 요청)
@@ -48,7 +77,7 @@ export default function PerformancesPage() {
             type: "pblprfr",
             stdate: selectedDate,
             eddate: selectedDate,
-            areacode: region,
+            areacode: area,
             openrun: status,
             cpage: (pageIndex + 1).toString(),
             rows: "50",
@@ -65,7 +94,9 @@ export default function PerformancesPage() {
         const matchSearch =
             performance.prfnm.includes(searchTerm) || performance.fcltynm.includes(searchTerm);
         const matchGenre = genre ? performance.genrenm === genre : true;
-        return matchSearch && matchGenre;
+        const matchArea = area ? performance.area === area : true;
+        const matchStatus = status ? performance.prfstate === status : true;
+        return matchSearch && matchGenre && matchArea && matchStatus;
     });
 
     // 🔹 검색어 변경 시 필터링 (디바운스 적용)
@@ -84,8 +115,27 @@ export default function PerformancesPage() {
     const handleGenreChange = (value: string) => {
         setGenre(value);
         setSize(1);
-        if (value === "") {
-            mutate([], false); // ✅ "전체" 선택 시 데이터를 초기화하고 다시 불러옴
+        console.log(value);
+        if (value === "전체") {
+            setGenre("");
+        }
+    };
+
+    const handleAreaChange = (value: string) => {
+        setArea(value);
+        setSize(1);
+        console.log(value);
+        if (value === "전체") {
+            setArea("");
+        }
+    };
+
+    const handleStatusChange = (value: string) => {
+        setStatus(value);
+        setSize(1);
+        console.log(value);
+        if (value === "전체") {
+            setStatus("");
         }
     };
 
@@ -129,23 +179,26 @@ export default function PerformancesPage() {
                     ))}
                 </select>
                 <select
-                    value={region}
-                    onChange={(e) => handleFilterChange(setRegion, e.target.value)}
+                    value={area}
+                    onChange={(e) => handleAreaChange(e.target.value)} // ✅ "전체" 선택 처리
                     className="p-2 border rounded"
                 >
-                    <option value="">지역 선택</option>
-                    <option value="11">서울</option>
-                    <option value="28">부산</option>
-                    <option value="41">경기도</option>
+                    {areaOptions.map((option) => (
+                        <option key={option.value} value={option.label}>
+                            {option.label}
+                        </option>
+                    ))}
                 </select>
                 <select
                     value={status}
-                    onChange={(e) => handleFilterChange(setStatus, e.target.value)}
+                    onChange={(e) => handleStatusChange(e.target.value)} // ✅ "전체" 선택 처리
                     className="p-2 border rounded"
                 >
-                    <option value="">공연 상태</option>
-                    <option value="Y">공연 중</option>
-                    <option value="N">공연 예정</option>
+                    {statusOptions.map((option) => (
+                        <option key={option.value} value={option.label}>
+                            {option.label}
+                        </option>
+                    ))}
                 </select>
             </div>
 
