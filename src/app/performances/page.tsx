@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import useSWRInfinite from "swr/infinite";
 import PerformanceCard from "@/components/PerformanceCard";
 import { debounce } from "@/utils/debounce";
+import { ChevronUp } from "lucide-react";
 
 // ✅ 장르 코드 매핑
 const genreMapping: Record<string, string> = {
@@ -68,6 +69,7 @@ export default function PerformancesPage() {
     const [area, setArea] = useState("");       // 지역 필터
     const [status, setStatus] = useState("");   // 상태 필터
     const [selectedDate, setSelectedDate] = useState("20250208");
+    const [showScrollTop, setShowScrollTop] = useState(false);
 
     // 🔹 SWR Infinite Key 설정 (필터만 API 요청)
     const getKey = (pageIndex: number, previousPageData: any) => {
@@ -155,22 +157,35 @@ export default function PerformancesPage() {
         [isValidating, setSize, size]
     );
 
+    useEffect(() => {
+        const handleScroll = () => {
+            setShowScrollTop(window.scrollY > 300); // 300px 이상 스크롤 시 버튼 표시
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    // 🔹 화면 맨 위로 스크롤하는 함수
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6 text-white">공연 목록</h1>
+        <div className="container max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6 mt-20">
+            <h1 className="text-4xl font-bold mb-6 text-[#F8F5F0]">공연 목록</h1>
 
             {/* 🔍 검색 및 필터 */}
             <div className="flex flex-wrap gap-4 mb-6">
                 <input
                     type="text"
-                    placeholder="공연명 또는 공연시설 검색..."
+                    placeholder="공연명 또는 공연시설을 검색하세요."
                     onChange={(e) => handleSearchChange(e.target.value)}
-                    className="p-2 border border-gray-600 rounded w-full sm:w-1/3"
+                    className="hover:opacity-80 p-2 bg-[#2B2B2B] text-[#a9a59f] placeholder:text-[#a9a59f] w-full sm:w-1/3"
                 />
                 <select
                     value={genre}
                     onChange={(e) => handleGenreChange(e.target.value)} // ✅ "전체" 선택 처리
-                    className="p-2 border rounded"
+                    className="cursor-pointer text-[#a9a59f] bg-[#2B2B2B] text-sm hover:opacity-80 transition"
                 >
                     {genreOptions.map((option) => (
                         <option key={option.value} value={option.label}>
@@ -181,7 +196,7 @@ export default function PerformancesPage() {
                 <select
                     value={area}
                     onChange={(e) => handleAreaChange(e.target.value)} // ✅ "전체" 선택 처리
-                    className="p-2 border rounded"
+                    className="cursor-pointer text-[#a9a59f] bg-[#2B2B2B] text-sm hover:opacity-80 transition"
                 >
                     {areaOptions.map((option) => (
                         <option key={option.value} value={option.label}>
@@ -192,7 +207,7 @@ export default function PerformancesPage() {
                 <select
                     value={status}
                     onChange={(e) => handleStatusChange(e.target.value)} // ✅ "전체" 선택 처리
-                    className="p-2 border rounded"
+                    className="cursor-pointer text-[#a9a59f] bg-[#2B2B2B] text-sm hover:opacity-80 transition"
                 >
                     {statusOptions.map((option) => (
                         <option key={option.value} value={option.label}>
@@ -214,6 +229,15 @@ export default function PerformancesPage() {
 
             {/* ⏳ 로딩 중 표시 */}
             {isValidating && <p className="text-center text-white mt-4">로딩 중...</p>}
+
+            {showScrollTop && (
+                <button
+                    onClick={scrollToTop}
+                    className="fixed bottom-4 right-4 bg-[#F8F5F0] text-black p-3 rounded-full shadow-lg hover:opacity-70 transition"
+                >
+                    <ChevronUp size={24} />
+                </button>
+            )}
         </div>
     );
 }

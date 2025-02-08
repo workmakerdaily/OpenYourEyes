@@ -101,8 +101,8 @@ export default function PerformanceSection() {
     enableHorizontalScroll(perfScrollRef);
 
     return (
-        <section className="bg-[#F8F5F0] text-black py-10 px-6">
-            <div className="max-w-7xl mx-auto">
+        <section className="bg-[#F8F5F0] text-black py-10">
+            <div className="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6">
                 
                 {/* 🗓 연도 및 월 표시 */}
                 <header className="flex items-center justify-between mb-6">

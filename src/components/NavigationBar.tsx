@@ -9,8 +9,8 @@ const NavigationBar = () => {
     const [dropdown, setDropdown] = useState("");
 
     return (
-        <nav className="bg-black text-white py-6 sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto flex items-center justify-between relative">
+        <nav className="w-full bg-black sticky top-0 z-50 shadow-md">
+    <div className="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6 text-white py-6 flex items-center justify-between">
                 
                 {/* 데스크탑: 왼쪽 메뉴 | 모바일: 숨김 */}
                 <div className="hidden text-sm lg:flex space-x-6">

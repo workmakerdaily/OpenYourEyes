@@ -15,8 +15,8 @@ const BoxOffice = ({ date }: { date: string }) => {
         .slice(0, 3);
 
     return (
-        <section className="py-16 bg-black text-white">
-            <div className="max-w-7xl mx-auto px-4">
+        <section className="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6 py-16 bg-black text-white">
+            <div className="max-w-7xl mx-auto">
                 <h2 className="text-4xl font-bold mb-8 text-center">Top 3 박스오피스 공연</h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

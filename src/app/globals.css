@@ -41,3 +41,7 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+select option {
+  border-radius: 0 !important;
+}
