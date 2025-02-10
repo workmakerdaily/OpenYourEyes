@@ -5,10 +5,10 @@ const BASE_URL = "http://kopis.or.kr/openApi/restful";
 const SERVICE_KEY = process.env.NEXT_PUBLIC_KOPIS_API_KEY; // 환경 변수에서 API 키 가져오기
 
 export async function GET(
-    _req: NextRequest,
-    context: { params: Record<string, string> } // ✅ params를 Promise 타입으로 설정
+    req: NextRequest,
+    context: { params: { id: string } } // ✅ 정확한 타입 지정
 ) {
-    const id = String(context.params.id);
+    const { id } = context.params; // ✅ 동기적으로 params.id 접근
 
     if (!id) {
         return NextResponse.json({ error: "Invalid performance ID" }, { status: 400 });
@@ -16,7 +16,7 @@ export async function GET(
 
     try {
         const apiUrl = `${BASE_URL}/pblprfr/${id}?service=${SERVICE_KEY}`;
-        console.log("🔹 Fetching URL:", apiUrl);
+        console.log("🔹 Fetching URL:", apiUrl); // ✅ API 요청 URL 확인
 
         const response = await fetch(apiUrl);
         if (!response.ok) {
@@ -26,7 +26,7 @@ export async function GET(
         const xmlText = await response.text();
         const jsonData = await parseStringPromise(xmlText, { explicitArray: false });
 
-        console.log("🔹 API Response Data:", jsonData);
+        console.log("🔹 API Response Data:", jsonData); // ✅ API 응답 확인
 
         const performance = jsonData?.dbs?.db;
         if (!performance) {
