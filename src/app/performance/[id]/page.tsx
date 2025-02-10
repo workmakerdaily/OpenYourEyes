@@ -16,6 +16,7 @@ export default function PerformanceDetailPage() {
     console.log(performance.relates)
     return (
         <div className="container max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6 mt-20">
+            
             <h1 className="title-font text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-thin text-[#F8F5F0]">Performance</h1>
 
             <hr className="border-t border-[#a9a59f] opacity-50 my-6 sm:my-10 md:my-14 lg:my-18" />
@@ -39,21 +40,21 @@ export default function PerformanceDetailPage() {
         {/* 🎭 공연 정보 */}
         <div className="flex-1">
             <p className="text-2xl text-[#F8F5F0]"><strong>{performance.prfnm}</strong></p>
-            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-16 opacity-50">장소</span>{performance.fcltynm}</p>
-            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-16 opacity-50">기간</span>{performance.prfpdfrom} ~ {performance.prfpdto}</p>
-            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-16 opacity-50">장르</span>{performance.genrenm || "정보 없음"}</p>
-            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-12 opacity-50">런타임</span>{performance.prfruntime || "정보 없음"}</p>
-            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-7 opacity-50">관람 연령</span>{performance.prfage || "정보 없음"}</p>
-            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-7 opacity-50">티켓 가격</span>{performance.pcseguidance || "정보 없음"}</p>
-            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-7 opacity-50">공연 상태</span>{performance.prfstate}</p>
+            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-16 opacity-70">장소</span>{performance.fcltynm}</p>
+            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-16 opacity-70">기간</span>{performance.prfpdfrom} ~ {performance.prfpdto}</p>
+            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-16 opacity-70">장르</span>{performance.genrenm || "정보 없음"}</p>
+            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-12 opacity-70">런타임</span>{performance.prfruntime || "정보 없음"}</p>
+            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-7 opacity-70">관람 연령</span>{performance.prfage || "정보 없음"}</p>
+            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-7 opacity-70">티켓 가격</span>{performance.pcseguidance || "정보 없음"}</p>
+            <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-7 opacity-70">공연 상태</span>{performance.prfstate}</p>
         </div>
 
         {/* 🎭 출연진 & 제작진 */}
         {(performance.prfcast || performance.prfcrew) && (
             <div className="flex-1">
                 <h2 className="text-xl font-semibold text-[#C0A36E] border-b border-[#C0A36E] pb-2">출연진 & 제작진</h2>
-                {performance.prfcast && <p className="py-2 text-md text-[#a9a59f]"><span className="pr-10 opacity-50">출연진</span> {performance.prfcast}</p>}
-                {performance.prfcrew && <p className="py-2 text-md text-[#a9a59f]"><span className="pr-10 opacity-50">제작진</span> {performance.prfcrew}</p>}
+                {performance.prfcast && <p className="py-2 text-md text-[#a9a59f]"><span className="pr-10 opacity-70">출연진</span> {performance.prfcast}</p>}
+                {performance.prfcrew && <p className="py-2 text-md text-[#a9a59f]"><span className="pr-10 opacity-70">제작진</span> {performance.prfcrew}</p>}
             </div>
         )}
 

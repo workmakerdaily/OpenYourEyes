@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useVenuesByDate } from "@/hooks/useVenuesByDate";
 import { debounce } from "@/utils/debounce";
+import { useRouter } from "next/navigation";
+
 
 // ✅ 지역 코드 매핑
 const areaMapping: Record<string, string> = {
@@ -34,6 +36,7 @@ const areaOptions = [
 export default function VenuesPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [area, setArea] = useState(""); // ✅ 지역 필터 변수명 변경
+    const router = useRouter(); // ✅ 상세 페이지 이동을 위한 Next.js useRouter
 
     const { venues, isLoading, isError, isValidating, loadMore } = useVenuesByDate(searchTerm);
 
@@ -65,7 +68,7 @@ export default function VenuesPage() {
     // 🔹 공연장명 + 지역(시도, 구군) 필터링 적용
     const filteredVenues = venues.filter((venue) =>
         (searchTerm ? venue.fcltynm.includes(searchTerm) || venue.sidonm.includes(searchTerm) || venue.gugunnm.includes(searchTerm) : true) &&
-        (area ? venue.sidonm === area : true) // ✅ 지역명으로 비교
+        (area ? venue.sidonm === area : true)
     );
 
     return (
@@ -110,8 +113,9 @@ export default function VenuesPage() {
                         {filteredVenues.map((venue, index) => (
                             <tr
                                 key={venue.mt10id}
-                                className="border-b border-opacity-40 border-[#a9a59f] hover:border-[#a9a59f] text-[#a9a59f] hover:text-[#dfd9d0] transition"
+                                className="border-b border-opacity-40 border-[#a9a59f] hover:border-[#a9a59f] text-[#a9a59f] hover:text-[#dfd9d0] transition cursor-pointer"
                                 ref={index === filteredVenues.length - 1 ? lastElementRef : null}
+                                onClick={() => router.push(`/venue/${venue.mt10id}`)} // ✅ 클릭 시 상세 페이지 이동
                             >
                                 <td className="p-3 text-xs py-4 sm:py-4 sm:text-sm md:py-6 md:text-base lg:py-8 lg:text-base">{venue.fcltynm}</td>
                                 <td className="p-3 text-xs py-4 sm:py-4 sm:text-sm md:py-6 md:text-base lg:py-8 lg:text-base">{venue.sidonm} {venue.gugunnm}</td>

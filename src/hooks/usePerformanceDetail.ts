@@ -5,7 +5,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function usePerformanceDetail(performanceId: string) {
     const { data, error } = useSWR<PerformanceDetail>(
-        performanceId ? `/api/kopis/detail/${performanceId}` : null,
+        performanceId ? `/api/kopis/performance/${performanceId}` : null,
         fetcher
     );
 

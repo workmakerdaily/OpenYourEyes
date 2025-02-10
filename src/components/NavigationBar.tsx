@@ -13,9 +13,9 @@ const NavigationBar = () => {
                 
                 {/* 🖥️ 데스크탑 메뉴 */}
                 <div className="hidden text-sm lg:flex space-x-6">
-                    <Link href="/performance" className="hover:text-gray-400">공연 목록</Link>
+                    <Link href="/performance" className="hover:text-gray-400">공연</Link>
                     <Link href="/venue" className="hover:text-gray-400">공연장</Link>
-                    <Link href="/productions" className="hover:text-gray-400">기획/제작사</Link>
+                    <Link href="/producer" className="hover:text-gray-400">기획/제작사</Link>
                     <Link href="/boxoffice" className="hover:text-gray-400">예매 순위</Link>
                 </div>
 
@@ -29,12 +29,6 @@ const NavigationBar = () => {
 
                 {/* 🔎 검색 & 로그인 */}
                 <div className="text-sm flex items-center space-x-4">
-                    {/* 검색창 (모바일 숨김, md 이상에서 표시) */}
-                    <input 
-                        type="text" 
-                        placeholder="검색" 
-                        className="hidden md:block px-3 py-2 bg-[#292929] text-white rounded-md focus:outline-none"
-                    />
 
                     {/* 로그인 & 회원가입 */}
                     <div className="hidden lg:flex space-x-3">
@@ -52,9 +46,9 @@ const NavigationBar = () => {
             {/* 📱 모바일 메뉴 */}
             {menuOpen && (
                 <div className="lg:hidden bg-black text-white flex flex-col items-start space-y-4 py-6 px-6">
-                    <Link href="/performances" className="hover:text-gray-400">공연 목록</Link>
-                    <Link href="/venues" className="hover:text-gray-400">공연장</Link>
-                    <Link href="/productions" className="hover:text-gray-400">기획/제작사</Link>
+                    <Link href="/performances" className="hover:text-gray-400">공연</Link>
+                    <Link href="/venue" className="hover:text-gray-400">공연장</Link>
+                    <Link href="/producer" className="hover:text-gray-400">기획/제작사</Link>
                     <Link href="/boxoffice" className="hover:text-gray-400">예매 순위</Link>
 
                     {/* 로그인 & 회원가입 */}
