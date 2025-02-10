@@ -13,22 +13,15 @@ interface PerformanceCardProps {
     };
 }
 
-// ✅ 공연 상태 매핑 (숫자 코드 → 한글 상태)
-const statusLabels: Record<string, string> = {
-    "01": "공연예정",
-    "02": "공연중",
-    "03": "공연완료",
-};
-
 export default function PerformanceCard({ performance }: PerformanceCardProps) {
 
     return (
-        <Link href={`/performance/${performance.mt20id}`} passHref>
+        <Link href={`/performance/${performance.mt20id}`}>
         <div className="text-white overflow-hidden shadow-lg flex flex-row w-full border border-[#a9a59f]">
             {/* 🎭 포스터 (왼쪽) */}
             <div className="w-[150px] h-[200px] flex-shrink-0 p-2">
                 <Image
-                    src={performance.poster || "/default-poster.jpg"}
+                    src={performance.poster}
                     alt={performance.prfnm}
                     width={150} // 크기 고정
                     height={200} // 크기 고정
@@ -44,7 +37,7 @@ export default function PerformanceCard({ performance }: PerformanceCardProps) {
                     {performance.prfpdfrom} ~ {performance.prfpdto}
                 </p>
                 <p className={`text-xs font-bold mt-2 
-                    ${performance.prfstate === "공연예정" ? "text-[]#a9a59f" : ""}
+                    ${performance.prfstate === "공연예정" ? "text-[#a9a59f]" : ""}
                     ${performance.prfstate === "공연중" ? "text-[#F8F5F0]" : ""}
                     ${performance.prfstate === "공연완료" ? "text-[#888580]" : ""}
                 `}>

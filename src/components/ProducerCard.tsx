@@ -1,13 +1,15 @@
 "use client";
 
+import { Producer } from "@/types";
 import { forwardRef } from "react";
 
 interface ProducerProps {
-    producer: any;
+    producer: Producer;
 }
 
 // ✅ `forwardRef`를 사용하여 ref를 `div`에 전달
-export const ProducerCard = forwardRef<HTMLDivElement, ProducerProps>(({ producer }, ref) => {
+export const ProducerCard = forwardRef<HTMLDivElement, ProducerProps>((props , ref) => {
+    const { producer } = props;
     const relateurl = producer.relateurl?.trim(); // 🔹 공백 제거
     const isValidUrl = relateurl && relateurl !== "-" && relateurl !== "";
 

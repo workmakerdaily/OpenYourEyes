@@ -1,14 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { parseStringPromise } from "xml2js";
 
 const BASE_URL = "http://kopis.or.kr/openApi/restful";
 const SERVICE_KEY = process.env.NEXT_PUBLIC_KOPIS_API_KEY; // 환경 변수에서 API 키 가져오기
 
 export async function GET(
-    _req: Request,
-    { params }: { params: { id: string } }
+    req: NextRequest,
+    { params }: { params: Promise<{ id: string }> } // ✅ params를 Promise 타입으로 설정
 ) {
-    const { id } = params;
+    const resolvedParams = await params; // ✅ 비동기적으로 params를 가져옴
+    const { id } = resolvedParams;
+
     if (!id) {
         return NextResponse.json({ error: "Invalid performance ID" }, { status: 400 });
     }
@@ -25,7 +27,13 @@ export async function GET(
         const xmlText = await response.text();
         const jsonData = await parseStringPromise(xmlText, { explicitArray: false });
 
-        const performance = jsonData?.dbs?.db || {};
+        console.log("🔹 API Response Data:", jsonData);
+
+        const performance = jsonData?.dbs?.db;
+        if (!performance) {
+            return NextResponse.json({ error: "No performance found" }, { status: 404 });
+        }
+
         return NextResponse.json(performance);
     } catch (error) {
         return NextResponse.json(

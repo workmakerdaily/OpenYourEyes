@@ -11,8 +11,6 @@ export default function PerformanceDetailPage() {
     if (isLoading) return <p className="text-center text-white">로딩 중...</p>;
     if (isError || !performance) return <p className="text-center text-red-500">공연 정보를 불러올 수 없습니다.</p>;
 
-    const firstBookingUrl = performance.relates?.[0]?.relateurl || null;
-    const isBookingAvailable = !!firstBookingUrl;
     console.log(performance.relates)
     return (
         <div className="container max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6 mt-20">

@@ -5,7 +5,7 @@ const BASE_URL = "http://kopis.or.kr/openApi/restful";
 const SERVICE_KEY = process.env.NEXT_PUBLIC_KOPIS_API_KEY; // 환경 변수에서 API 키 가져오기
 
 export async function GET(
-    req: Request,
+    _req: Request,
     { params }: { params: { id: string } }
 ) {
     console.log("🔹 Venue API called with ID:", params.id); // ✅ 콘솔 확인용 로그

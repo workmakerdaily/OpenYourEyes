@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { usePerformancesByDate } from "@/hooks/usePerformancesByDate";
 import { Performance } from "@/types";
 import Image from "next/image";
@@ -22,7 +22,7 @@ export default function PerformanceSection() {
     const year = selectedDate.split("-")[0];
     const month = selectedDate.split("-")[1];
 
-    const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    const daysOfWeek = useMemo(() => ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"], []);
 
     const [dates, setDates] = useState<{ 
         day: number; 
@@ -55,7 +55,7 @@ export default function PerformanceSection() {
         };
 
         generateDatesOfMonth();
-    }, [year, month]);
+    }, [year, month, daysOfWeek, today]); // ✅ 빠진 의존성 추가
 
     useEffect(() => {
         if (!isLoading) {
@@ -75,30 +75,44 @@ export default function PerformanceSection() {
         }
     }, [performances, isLoading]);
 
-    // ✅ 마우스 휠을 이용해 가로 스크롤 가능하게 만들기 (날짜 목록 & 공연 목록)
-    const enableHorizontalScroll = (ref: React.RefObject<HTMLDivElement | null>) => {
-        useEffect(() => {
-            const scrollContainer = ref.current;
-            if (!scrollContainer) return;
+    // ✅ 마우스 휠을 이용해 가로 스크롤 가능하게 만들기 (useEffect에서 직접 호출)
+    useEffect(() => {
+        const scrollContainer = dateScrollRef.current;
+        if (!scrollContainer) return;
 
-            const handleWheelScroll = (event: WheelEvent) => {
-                event.preventDefault();
-                scrollContainer.scrollBy({
-                    left: event.deltaY * 4, // 🔹 속도 4배 증가
-                    behavior: "smooth",
-                });
-            };
+        const handleWheelScroll = (event: WheelEvent) => {
+            event.preventDefault();
+            scrollContainer.scrollBy({
+                left: event.deltaY * 4, // 🔹 속도 4배 증가
+                behavior: "smooth",
+            });
+        };
 
-            scrollContainer.addEventListener("wheel", handleWheelScroll, { passive: false });
+        scrollContainer.addEventListener("wheel", handleWheelScroll, { passive: false });
 
-            return () => {
-                scrollContainer.removeEventListener("wheel", handleWheelScroll);
-            };
-        }, [ref.current]);
-    };
+        return () => {
+            scrollContainer.removeEventListener("wheel", handleWheelScroll);
+        };
+    }, []); // ✅ enableHorizontalScroll 제거하고 useEffect에서 직접 적용
 
-    enableHorizontalScroll(dateScrollRef);
-    enableHorizontalScroll(perfScrollRef);
+    useEffect(() => {
+        const scrollContainer = perfScrollRef.current;
+        if (!scrollContainer) return;
+
+        const handleWheelScroll = (event: WheelEvent) => {
+            event.preventDefault();
+            scrollContainer.scrollBy({
+                left: event.deltaY * 4,
+                behavior: "smooth",
+            });
+        };
+
+        scrollContainer.addEventListener("wheel", handleWheelScroll, { passive: false });
+
+        return () => {
+            scrollContainer.removeEventListener("wheel", handleWheelScroll);
+        };
+    }, []); // ✅ enableHorizontalScroll 제거하고 useEffect에서 직접 적용
 
     return (
         <section className="bg-[#F8F5F0] text-black py-10">
@@ -137,7 +151,6 @@ export default function PerformanceSection() {
                 {/* 🎭 선택한 날짜의 공연 목록 */}
                 <div className="mt-6 min-h-[360px]">
                     {isLoading ? (
-                        // ✅ 스켈레톤 UI 적용
                         <div className="flex gap-6 overflow-x-auto scrollbar-hide">
                             {[...Array(5)].map((_, index) => (
                                 <div key={index} className="min-w-[220px] max-w-[220px] flex-shrink-0 animate-pulse">

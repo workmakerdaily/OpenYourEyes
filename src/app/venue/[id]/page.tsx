@@ -1,7 +1,6 @@
 "use client";
 
 import { useVenueDetail } from "@/hooks/useVenueDetail";
-import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 
 export default function VenueDetailPage() {
@@ -9,7 +8,7 @@ export default function VenueDetailPage() {
     const id = params.id as string;
 
     const { venue, isLoading, isError } = useVenueDetail(id);
-    const router = useRouter();
+
 
     if (isLoading) return <p className="text-center text-white">로딩 중...</p>;
     if (isError || !venue) return <p className="text-center text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</p>;

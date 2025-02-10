@@ -5,6 +5,7 @@ import useSWRInfinite from "swr/infinite";
 import PerformanceCard from "@/components/PerformanceCard";
 import { debounce } from "@/utils/debounce";
 import { ChevronUp } from "lucide-react";
+import { Performance } from "@/types";
 
 // ✅ 장르 코드 매핑
 const genreMapping: Record<string, string> = {
@@ -56,24 +57,41 @@ const statusOptions = [
     { label: "공연완료", value: "공연완료" },
 ];
 
+const getCurrentMonthRange = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1; // `getMonth()`는 0부터 시작하므로 +1 필요
+
+    // 이번 달 1일 (YYYYMMDD)
+    const firstDay = `${year}${String(month).padStart(2, "0")}01`;
+
+    // 이번 달 마지막 날 (YYYYMMDD)
+    const lastDay = new Date(year, month, 0).getDate();
+    const lastDayFormatted = `${year}${String(month).padStart(2, "0")}${String(lastDay).padStart(2, "0")}`;
+
+    return { firstDay, lastDay: lastDayFormatted };
+};
+
+
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function PerformancesPage() {
+    const { firstDay: stdate, lastDay: eddate } = getCurrentMonthRange();
     const [searchTerm, setSearchTerm] = useState("");
     const [genre, setGenre] = useState("");     // 장르 필터
     const [area, setArea] = useState("");       // 지역 필터
     const [status, setStatus] = useState("");   // 상태 필터
-    const [selectedDate, setSelectedDate] = useState("20250208");
+
     const [showScrollTop, setShowScrollTop] = useState(false);
 
     // 🔹 SWR Infinite Key 설정 (필터만 API 요청)
-    const getKey = (pageIndex: number, previousPageData: any) => {
+    const getKey = (pageIndex: number, previousPageData: Performance[] | null) => {
         if (previousPageData && previousPageData.length === 0) return null;
 
         const queryParams = new URLSearchParams({
             type: "pblprfr",
-            stdate: selectedDate,
-            eddate: selectedDate,
+            stdate,
+            eddate,
             areacode: area,
             prfstate: status,
             cpage: (pageIndex + 1).toString(),
@@ -83,11 +101,11 @@ export default function PerformancesPage() {
         return `/api/kopis?${queryParams}`;
     };
 
-    const { data, size, setSize, isValidating, mutate } = useSWRInfinite(getKey, fetcher);
+    const { data, size, setSize, isValidating } = useSWRInfinite(getKey, fetcher);
     const allPerformances = data ? [].concat(...data) : [];
 
     // 🔹 클라이언트에서 공연명, 시설명, 장르 필터링 적용
-    const filteredPerformances = allPerformances.filter((performance: any) => {
+    const filteredPerformances = allPerformances.filter((performance: Performance) => {
         const matchSearch =
             performance.prfnm.includes(searchTerm) || performance.fcltynm.includes(searchTerm);
         const matchGenre = genre ? performance.genrenm === genre : true;
@@ -100,13 +118,6 @@ export default function PerformancesPage() {
     const handleSearchChange = debounce((value: string) => {
         setSearchTerm(value);
     }, 500);
-
-    // 🔹 필터 변경 시 첫 페이지부터 다시 로드
-    const handleFilterChange = (setter: Function, value: string) => {
-        setter(value);
-        setSize(1);
-        mutate([], false); // ✅ 기존 데이터 초기화 후 새로운 데이터 요청
-    };
 
     // 🔹 장르 필터 변경 시 전체 선택 처리
     const handleGenreChange = (value: string) => {
@@ -220,7 +231,7 @@ export default function PerformancesPage() {
 
             {/* 🎭 공연 목록 */}
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredPerformances.map((performance: any, index) => {
+                {filteredPerformances.map((performance: Performance, index) => {
                     if (index === filteredPerformances.length - 1) {
                         return <div ref={lastElementRef} key={performance.mt20id}><PerformanceCard performance={performance} /></div>;
                     }

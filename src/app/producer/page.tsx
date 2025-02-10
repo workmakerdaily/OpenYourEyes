@@ -5,6 +5,7 @@ import useSWRInfinite from "swr/infinite";
 import { debounce } from "@/utils/debounce";
 import { ChevronUp } from "lucide-react";
 import { ProducerCard } from "@/components/ProducerCard";
+import { Producer } from "@/types";
 
 // 🔹 API 요청 함수
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -14,7 +15,7 @@ export default function ProducersPage() {
     const [showScrollTop, setShowScrollTop] = useState(false);
 
     // 🔹 SWR Infinite Key 설정 (페이지네이션 적용)
-    const getKey = (pageIndex: number, previousPageData: any) => {
+    const getKey = (pageIndex: number, previousPageData: Producer[]) => {
         if (previousPageData && previousPageData.length === 0) return null;
         const queryParams = new URLSearchParams({
             type: "mnfct",
@@ -24,11 +25,11 @@ export default function ProducersPage() {
         return `/api/kopis?${queryParams}`;
     };
 
-    const { data, size, setSize, isValidating, mutate } = useSWRInfinite(getKey, fetcher);
+    const { data, size, setSize, isValidating } = useSWRInfinite(getKey, fetcher);
     const allProducers = data ? [].concat(...data) : [];
 
     // 🔹 클라이언트 검색 필터 적용
-    const filteredProducers = allProducers.filter((producer: any) =>
+    const filteredProducers = allProducers.filter((producer: Producer) =>
         producer.entrpsnm?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -84,7 +85,7 @@ export default function ProducersPage() {
 
             {/* 🏢 제작사 목록 (카드 형태) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {filteredProducers.map((producer: any, index) => (
+                {filteredProducers.map((producer: Producer, index) => (
                     <ProducerCard
                         key={producer.mt30id}
                         producer={producer}
