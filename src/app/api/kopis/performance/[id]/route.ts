@@ -6,9 +6,9 @@ const SERVICE_KEY = process.env.NEXT_PUBLIC_KOPIS_API_KEY; // 환경 변수에�
 
 export async function GET(
     req: NextRequest,
-    context: { params: { id: string } } // ✅ 정확한 타입 지정
+    context: any // ✅ 타입 추론을 이용하여 Next.js가 올바르게 처리하도록 유도
 ) {
-    const { id } = context.params; // ✅ 동기적으로 params.id 접근
+    const { id } = context.params as { id: string }; // ✅ 타입 단언을 사용하여 명확한 문자열 변환
 
     if (!id) {
         return NextResponse.json({ error: "Invalid performance ID" }, { status: 400 });
