@@ -5,11 +5,10 @@ const BASE_URL = "http://kopis.or.kr/openApi/restful";
 const SERVICE_KEY = process.env.NEXT_PUBLIC_KOPIS_API_KEY; // 환경 변수에서 API 키 가져오기
 
 export async function GET(
-    req: NextRequest,
-    { params }: { params: Promise<{ id: string }> } // ✅ params를 Promise 타입으로 설정
+    _req: NextRequest,
+    context: { params: Record<string, string> } // ✅ params를 Promise 타입으로 설정
 ) {
-    const resolvedParams = await params; // ✅ 비동기적으로 params를 가져옴
-    const { id } = resolvedParams;
+    const id = String(context.params.id);
 
     if (!id) {
         return NextResponse.json({ error: "Invalid performance ID" }, { status: 400 });

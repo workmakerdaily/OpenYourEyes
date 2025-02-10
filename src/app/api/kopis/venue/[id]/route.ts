@@ -1,21 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { parseStringPromise } from "xml2js";
 
 const BASE_URL = "http://kopis.or.kr/openApi/restful";
 const SERVICE_KEY = process.env.NEXT_PUBLIC_KOPIS_API_KEY; // 환경 변수에서 API 키 가져오기
 
 export async function GET(
-    _req: Request,
-    { params }: { params: { id: string } }
+    req: NextRequest,
+    context: { params: { id: string } } // ✅ 명확한 타입 정의
 ) {
-    console.log("🔹 Venue API called with ID:", params.id); // ✅ 콘솔 확인용 로그
+    const { id } = context.params; // ✅ 동기적으로 params.id 접근
 
-    if (!params.id) {
+    if (!id) {
         return NextResponse.json({ error: "Invalid venue ID" }, { status: 400 });
     }
 
     try {
-        const apiUrl = `${BASE_URL}/prfplc/${params.id}?service=${SERVICE_KEY}`;
+        const apiUrl = `${BASE_URL}/prfplc/${id}?service=${SERVICE_KEY}`;
         console.log("🔹 Fetching URL:", apiUrl); // ✅ API 요청 URL 확인
 
         const response = await fetch(apiUrl);
