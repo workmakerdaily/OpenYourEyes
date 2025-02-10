@@ -39,13 +39,6 @@ const areaMapping: Record<string, string> = {
     "제주특별자치도": "50",
 }
 
-const statusMapping: Record<string, string> = {
-    "공연예정": "01",
-    "공연중": "02",
-    "공연완료": "03",
-}
-
-
 const genreOptions = [
     { label: "전체", value: "" },
     ...Object.entries(genreMapping).map(([label, value]) => ({ label, value })),
@@ -58,7 +51,9 @@ const areaOptions = [
 
 const statusOptions = [
     { label: "전체", value: "" },
-    ...Object.entries(statusMapping).map(([label, value]) => ({ label, value })),
+    { label: "공연예정", value: "공연예정" },
+    { label: "공연중", value: "공연중" },
+    { label: "공연완료", value: "공연완료" },
 ];
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -80,7 +75,7 @@ export default function PerformancesPage() {
             stdate: selectedDate,
             eddate: selectedDate,
             areacode: area,
-            openrun: status,
+            prfstate: status,
             cpage: (pageIndex + 1).toString(),
             rows: "50",
         }).toString();
@@ -140,6 +135,7 @@ export default function PerformancesPage() {
             setStatus("");
         }
     };
+    
 
     // 🔹 Intersection Observer (무한 스크롤)
     const observerRef = useRef<IntersectionObserver | null>(null);
@@ -172,53 +168,58 @@ export default function PerformancesPage() {
 
     return (
         <div className="container max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6 mt-20">
-            <h1 className="text-4xl font-bold mb-6 text-[#F8F5F0]">공연 목록</h1>
+            <h1 className="title-font text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-thin mb-8 text-[#F8F5F0]">Performance</h1>
 
             {/* 🔍 검색 및 필터 */}
-            <div className="flex flex-wrap gap-4 mb-6">
-                <input
-                    type="text"
-                    placeholder="공연명 또는 공연시설을 검색하세요."
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className="hover:opacity-80 p-2 bg-[#2B2B2B] text-[#a9a59f] placeholder:text-[#a9a59f] w-full sm:w-1/3"
-                />
-                <select
-                    value={genre}
-                    onChange={(e) => handleGenreChange(e.target.value)} // ✅ "전체" 선택 처리
-                    className="cursor-pointer text-[#a9a59f] bg-[#2B2B2B] text-sm hover:opacity-80 transition"
-                >
-                    {genreOptions.map((option) => (
-                        <option key={option.value} value={option.label}>
-                            {option.label}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    value={area}
-                    onChange={(e) => handleAreaChange(e.target.value)} // ✅ "전체" 선택 처리
-                    className="cursor-pointer text-[#a9a59f] bg-[#2B2B2B] text-sm hover:opacity-80 transition"
-                >
-                    {areaOptions.map((option) => (
-                        <option key={option.value} value={option.label}>
-                            {option.label}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    value={status}
-                    onChange={(e) => handleStatusChange(e.target.value)} // ✅ "전체" 선택 처리
-                    className="cursor-pointer text-[#a9a59f] bg-[#2B2B2B] text-sm hover:opacity-80 transition"
-                >
-                    {statusOptions.map((option) => (
-                        <option key={option.value} value={option.label}>
-                            {option.label}
-                        </option>
-                    ))}
-                </select>
-            </div>
+            <div className="flex flex-col sm:flex-row gap-4 mb-6 items-center w-full">
+    {/* 검색창 (w-full 유지, 작은 화면에서 필터들과 함께 아래로 내려감) */}
+    <input
+        type="text"
+        placeholder="공연명 또는 공연시설을 검색하세요."
+        onChange={(e) => handleSearchChange(e.target.value)}
+        className="hover:opacity-80 p-2 bg-[#2B2B2B] text-[#a9a59f] placeholder:text-[#a9a59f] w-full sm:w-1/3 h-12"
+    />
+    
+    <div className="flex flex-row sm:flex-row gap-4 w-full sm:w-auto items-center">
+        <select
+            value={genre}
+            onChange={(e) => handleGenreChange(e.target.value)}
+            className="cursor-pointer text-[#a9a59f] bg-[#2B2B2B] text-sm hover:opacity-80 transition h-12 min-w-[140px]"
+        >
+            {genreOptions.map((option) => (
+                <option key={option.value} value={option.label}>
+                    {option.label}
+                </option>
+            ))}
+        </select>
+        <select
+            value={area}
+            onChange={(e) => handleAreaChange(e.target.value)}
+            className="cursor-pointer text-[#a9a59f] bg-[#2B2B2B] text-sm hover:opacity-80 transition h-12 min-w-[140px]"
+        >
+            {areaOptions.map((option) => (
+                <option key={option.value} value={option.label}>
+                    {option.label}
+                </option>
+            ))}
+        </select>
+        <select
+            value={status}
+            onChange={(e) => handleStatusChange(e.target.value)}
+            className="cursor-pointer text-[#a9a59f] bg-[#2B2B2B] text-sm hover:opacity-80 transition h-12 min-w-[140px]"
+        >
+            {statusOptions.map((option) => (
+                <option key={option.value} value={option.label}>
+                    {option.label}
+                </option>
+            ))}
+        </select>
+    </div>
+</div>
+            <hr className="border-t border-[#a9a59f] opacity-50 my-4 sm:my-8 md:my-12 lg:my-16" />
 
             {/* 🎭 공연 목록 */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredPerformances.map((performance: any, index) => {
                     if (index === filteredPerformances.length - 1) {
                         return <div ref={lastElementRef} key={performance.mt20id}><PerformanceCard performance={performance} /></div>;
