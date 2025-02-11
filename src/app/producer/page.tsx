@@ -34,28 +34,23 @@ export default function ProducersPage() {
     );
 
     // 🔹 검색어 변경 시 디바운스 적용
-    const handleSearchChange = useCallback(
-        debounce((value: string) => {
-            setSearchTerm(value);
-        }, 500),
-        []
-    );
+    const handleSearchChange = debounce((value: string) => {
+        setSearchTerm(value);
+    }, 500);
 
     // 🔹 Intersection Observer (무한 스크롤 감지)
     const observerRef = useRef<IntersectionObserver | null>(null);
-    const lastElementRef = useCallback(
-        (node: HTMLDivElement | null) => {
-            if (isValidating) return;
-            if (observerRef.current) observerRef.current.disconnect();
-            observerRef.current = new IntersectionObserver(([entry]) => {
-                if (entry.isIntersecting) {
-                    setSize(size + 1);
-                }
-            });
-            if (node) observerRef.current.observe(node);
-        },
-        [isValidating, setSize, size]
-    );
+    
+    const lastElementRef = (node: HTMLDivElement | null) => {
+        if (isValidating) return;
+        if (observerRef.current) observerRef.current.disconnect();
+        observerRef.current = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                setSize((prevSize) => prevSize + 1);
+            }
+        });
+        if (node) observerRef.current.observe(node);
+    };
 
     useEffect(() => {
         const handleScroll = () => {

@@ -11,8 +11,8 @@ export default function LoginModal() {
     const { isLoginOpen, closeLogin, openSignup } = useModalStore();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [showError, setShowError] = useState(false);
-    const [error, setError] = useState("");
+    const [showError, _setShowError] = useState(false);
+    const [_error, setError] = useState("");
 
     // 이메일 형식 확인 (간단한 정규식)
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -81,7 +81,7 @@ export default function LoginModal() {
                     {/* 로그인 버튼 */}
                     <button
                         onClick={handleLogin}
-                        className={`w-full py-3 font-bold rounded-md transition 
+                        className={`w-full py-3 font-bold transition 
                         ${isValid ? "bg-[#a9a59f] text-[#F8F5F0] hover:opacity-70" : "bg-gray-600 text-gray-400 cursor-not-allowed opacity-50"}`}
                     >
                         로그인

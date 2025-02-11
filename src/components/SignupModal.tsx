@@ -13,7 +13,7 @@ export default function SignupModal() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
-    const [error, setError] = useState("");
+    const [_error, setError] = useState("");
 
     // 유효성 검사 상태 (Blur 발생 시 활성화)
     const [touched, setTouched] = useState({
@@ -62,7 +62,7 @@ export default function SignupModal() {
             }
         }
     };
-    
+
     if (!isSignupOpen) return null;
 
     return (
@@ -136,7 +136,7 @@ export default function SignupModal() {
                     {/* 회원가입 버튼 */}
                     <button
                         onClick={handleSignup}
-                        className={`w-full py-2 font-bold rounded-md transition 
+                        className={`w-full py-2 font-bold transition 
                         ${isValid ? "bg-[#a9a59f] text-[#F8F5F0] hover:opacity-70" : "bg-gray-600 text-gray-400 cursor-not-allowed opacity-50"}`}
                         disabled={!isValid}
                     >

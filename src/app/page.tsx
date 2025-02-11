@@ -7,8 +7,6 @@ import EndSection from "@/components/EndSection";
 
 export default function Home() {
 
-  const today = new Date().toISOString().split("T")[0];
-
   return (
     <main className="min-h-screen">
       <Banner />
