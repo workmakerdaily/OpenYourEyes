@@ -35,8 +35,8 @@ export default function LoginModal() {
     const handleLogin = async () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            alert("로그인 성공!");
-            closeLogin(); // 로그인 성공 시 모달 닫기
+            alert("로그인되셨습니다.");
+            closeLogin();
         } catch (error: any) {
             setError("이메일 또는 비밀번호가 일치하지 않습니다."); // 🔴 Firebase 로그인 오류 처리
         }
