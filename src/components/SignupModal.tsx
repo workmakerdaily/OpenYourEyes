@@ -6,11 +6,6 @@ import { auth } from "@/lib/firebase";
 import { useModalStore } from "@/store/modalStore";
 
 // Zustand를 활용한 상태 관리
-interface ModalState {
-    isOpen: boolean;
-    openModal: () => void;
-    closeModal: () => void;
-}
 
 export default function SignupModal() {
     const { isSignupOpen, closeSignup, openLogin } = useModalStore();
@@ -59,11 +54,15 @@ export default function SignupModal() {
             setPasswordConfirm("");
             closeSignup(); // 회원가입 모달 닫기
             openLogin(); // 로그인 모달 열기
-        } catch (error: any) {
-            setError(error.message);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message); // ✅ error가 Error 객체인 경우 message를 설정
+            } else {
+                setError("회원가입 중 예상치 못한 오류가 발생했습니다."); // ✅ 기본적인 예외 처리
+            }
         }
     };
-
+    
     if (!isSignupOpen) return null;
 
     return (

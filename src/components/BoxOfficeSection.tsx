@@ -5,7 +5,7 @@ import { useBoxOfficeByDate } from "@/hooks/useBoxOfficeByDate";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
-const BoxOffice = ({ date }: { date: string }) => {
+const BoxOffice = () => {
     const { boxOffice, isLoading, isError } = useBoxOfficeByDate();
     const [isVisible, setIsVisible] = useState(false);
 

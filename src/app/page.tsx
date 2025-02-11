@@ -13,7 +13,7 @@ export default function Home() {
     <main className="min-h-screen">
       <Banner />
       <PerformanceSection />
-      <BoxOfficeSection date={today} />
+      <BoxOfficeSection />
       <EndSection />
     </main>
   );

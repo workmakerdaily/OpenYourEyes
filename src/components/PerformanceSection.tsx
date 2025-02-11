@@ -96,44 +96,24 @@ export default function PerformanceSection() {
     }, []); // ✅ enableHorizontalScroll 제거하고 useEffect에서 직접 적용
 
     useEffect(() => {
-        const attachWheelEvent = () => {
-            const scrollContainer = perfScrollRef.current;
-            if (!scrollContainer) return;
+        const scrollContainer = perfScrollRef.current;
+        if (!scrollContainer) return;
     
-            const handleWheelScroll = (event: WheelEvent) => {
-                event.preventDefault();
-                scrollContainer.scrollBy({
-                    left: event.deltaY * 4,
-                    behavior: "smooth",
-                });
-            };
-    
-            // ✅ 이벤트 리스너 중복 방지
-            scrollContainer.removeEventListener("wheel", handleWheelScroll);
-            scrollContainer.addEventListener("wheel", handleWheelScroll, { passive: false });
+        const handleWheelScroll = (event: WheelEvent) => {
+            event.preventDefault();
+            scrollContainer.scrollBy({
+                left: event.deltaY * 4,
+                behavior: "smooth",
+            });
         };
     
-        // ✅ `setTimeout`으로 DOM이 렌더링된 후 실행
-        const timeout = setTimeout(() => {
-            attachWheelEvent();
-        }, 300); // 🔹 300ms 딜레이 추가
-    
-        // ✅ `setInterval`을 활용하여 `perfScrollRef`가 null이 아닐 때까지 확인
-        const interval = setInterval(() => {
-            if (perfScrollRef.current) {
-                attachWheelEvent();
-                clearInterval(interval);
-            }
-        }, 100); // 🔹 100ms 간격으로 체크
+        // ✅ 이벤트 핸들러 추가 및 정리
+        scrollContainer.addEventListener("wheel", handleWheelScroll, { passive: false });
     
         return () => {
-            clearTimeout(timeout);
-            clearInterval(interval);
-            if (perfScrollRef.current) {
-                perfScrollRef.current.removeEventListener("wheel", attachWheelEvent);
-            }
+            scrollContainer.removeEventListener("wheel", handleWheelScroll);
         };
-    }, []);
+    }, [perfScrollRef.current]); // ✅ 종속성 배열에 ref의 current 값 추가
     
 
     return (

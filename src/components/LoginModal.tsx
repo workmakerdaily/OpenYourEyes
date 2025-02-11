@@ -6,11 +6,6 @@ import { auth } from "@/lib/firebase";
 import { useModalStore } from "@/store/modalStore";
 
 // Zustand를 활용한 상태 관리
-interface ModalState {
-    isOpen: boolean;
-    openModal: () => void;
-    closeModal: () => void;
-}
 
 export default function LoginModal() {
     const { isLoginOpen, closeLogin, openSignup } = useModalStore();
@@ -37,7 +32,7 @@ export default function LoginModal() {
             await signInWithEmailAndPassword(auth, email, password);
             alert("로그인되셨습니다.");
             closeLogin();
-        } catch (error: any) {
+        } catch (error) {
             setError("이메일 또는 비밀번호가 일치하지 않습니다."); // 🔴 Firebase 로그인 오류 처리
         }
     };
