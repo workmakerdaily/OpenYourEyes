@@ -3,21 +3,28 @@
 import { useVenueDetail } from "@/hooks/useVenueDetail";
 import { useParams } from "next/navigation";
 
+// component: 공연장 상세 페이지 //
 export default function VenueDetailPage() {
+
+    // state: URL 파라미터에서 공연장 ID 가져오기 //
     const params = useParams();
     const id = params.id as string;
 
+    // state: 공연장 상세 데이터 가져오기 //
     const { venue, isLoading, isError } = useVenueDetail(id);
 
-
+    // event handler: 데이터 로딩 상태 처리 //
     if (isLoading) return <p className="text-center text-white">로딩 중...</p>;
+
+    // event handler: 오류 또는 데이터 없음 처리 //
     if (isError || !venue) return <p className="text-center text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</p>;
 
+    // render: 공연장 상세 페이지 렌더링 //
     return (
         <div className="container max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6 mt-20">
-<h1 className="title-font text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-thin text-[#F8F5F0]">Venue</h1>
+            <h1 className="title-font text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-thin text-[#F8F5F0]">Venue</h1>
 
-<hr className="border-t border-[#a9a59f] opacity-50 my-6 sm:my-10 md:my-14 lg:my-18" />
+            <hr className="border-t border-[#a9a59f] opacity-50 my-6 sm:my-10 md:my-14 lg:my-18" />
 
             {/* 🏛 공연장 이름 */}
             <h1 className="text-4xl font-semibold text-[#F8F5F0] mt-6">{venue.fcltynm}</h1>

@@ -1,3 +1,4 @@
+// interface: 기획/제작사 타입 인터페이스 //
 export interface Producer {
     mt30id: string; // 기획/제작사 ID
     entrpsnm: string; // 기획/제작사명

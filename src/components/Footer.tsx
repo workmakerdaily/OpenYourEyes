@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 
-export default function Footer() {
+// component: 푸터 섹션 //
+const Footer = () => {
+
+    // render: 푸터 섹션 렌더링 //
     return (
         <footer className="relative bg-black text-white py-16 px-6">
             {/* 🎭 배경 이미지 추가 */}
@@ -22,7 +25,7 @@ export default function Footer() {
                     </p>
                 </div>
 
-                {/* 🌍 네비게이션 */}
+                {/* 네비게이션 */}
                 <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-6 text-sm">
                     <Link href="/performance" className="hover:text-[#C0A36E] flex items-center space-x-2">
                         <span>공연</span>
@@ -35,7 +38,7 @@ export default function Footer() {
                     </Link>
                 </div>
 
-                {/* 📌 소셜 미디어 */}
+                {/* 소셜 미디어 */}
                 <div className="flex space-x-4 mt-6 md:mt-0">
                     <Link href="https://instagram.com" target="_blank">
                         <FaInstagram className="w-6 h-6 hover:text-[#C0A36E]" />
@@ -50,7 +53,7 @@ export default function Footer() {
             </div>
 
 
-            {/* ⚡ 저작권 & 정보 */}
+            {/* 저작권 & 정보 */}
             <div className="text-center text-xs opacity-60 mt-10 relative z-10">
                 <p>© 2025 Open Your Eyes. All rights reserved.</p>
                 <p className="mt-2">
@@ -63,3 +66,5 @@ export default function Footer() {
         </footer>
     );
 }
+
+export default Footer;

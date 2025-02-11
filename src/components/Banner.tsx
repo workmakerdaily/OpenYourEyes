@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-export default function Banner() {
-    // ✅ 연기 위치를 상태값으로 저장 (클라이언트에서만 랜덤값 생성)
+// component: 배너 섹션 //
+const Banner = () => {
+    
+    // state: 연기 위치 (클라이언트에서만 랜덤값 생성) //
     const [smokePositions, setSmokePositions] = useState<{ top: string; left: string }[]>([]);
 
+    // effect: 연기 위치 랜덤 설정 (클라이언트 전용) //
     useEffect(() => {
-        // 클라이언트에서만 실행되도록 랜덤 위치 설정
         const positions = [...Array(4)].map(() => ({
             top: `${Math.random() * 50 + 20}%`,
             left: `${Math.random() * 80 + 10}%`,
@@ -15,7 +17,7 @@ export default function Banner() {
         setSmokePositions(positions);
     }, []);
 
-    // 🎭 연기 애니메이션 설정
+    // function: 연기 애니메이션 설정 //
     const smokeVariants = {
         initial: { opacity: 0, y: 50, x: 0, scale: 1 },
         animate: {
@@ -31,8 +33,10 @@ export default function Banner() {
         }
     };
 
-    // ✅ 타이핑 효과 적용 (Letter Reveal)
+    // state: 타이핑 효과 (Letter Reveal) //
     const title = "OPEN YOUR EYES";
+
+    // function: 타이핑 애니메이션 설정 //
     const titleVariants = {
         hidden: { opacity: 0, y: 20 },
         visible: (i: number) => ({
@@ -42,6 +46,7 @@ export default function Banner() {
         })
     };
 
+    // render: 배너 섹션 렌더링 //
     return (
         <section className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-black text-white">
             {/* 배경 이미지 */}
@@ -103,3 +108,5 @@ export default function Banner() {
         </section>
     );
 }
+
+export default Banner;

@@ -5,28 +5,31 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useModalStore } from "@/store/modalStore";
 
-// Zustand를 활용한 상태 관리
+// component: 로그인 모달 //
+const LoginModal = () => {
 
-export default function LoginModal() {
+    // state: Zustand를 활용한 모달 상태 관리 //
     const { isLoginOpen, closeLogin, openSignup } = useModalStore();
+
+    // state: 이메일 및 비밀번호 입력값 //
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showError, _setShowError] = useState(false);
     const [_error, setError] = useState("");
 
-    // 이메일 형식 확인 (간단한 정규식)
+    // function: 이메일 형식 유효성 검사 (정규식 활용) //
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-    // 비밀번호 길이 검사 (최소 6자 이상)
+    // function: 비밀번호 길이 검사 (최소 6자 이상) //
     const isPasswordLongEnough = password.length >= 6;
 
-    // 비밀번호에 영문 대소문자 및 숫자가 포함되어 있는지 확인
+    // function: 비밀번호 강도 검사 (영문 대소문자 + 숫자 포함) //
     const isPasswordStrong = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password);
 
-    // 이메일과 비밀번호가 모두 유효해야 로그인 버튼 활성화
+    // state: 이메일과 비밀번호가 모두 유효해야 로그인 버튼 활성화 //
     const isValid = isValidEmail && isPasswordLongEnough && isPasswordStrong;
 
-    // 로그인 버튼 클릭 시 오류 메시지 표시
+    // event handler: 로그인 처리 //
     const handleLogin = async () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
@@ -37,8 +40,10 @@ export default function LoginModal() {
         }
     };
 
+    // event handler: 모달이 닫혀 있으면 렌더링하지 않음 //
     if (!isLoginOpen) return null;
 
+    // render: 로그인 모달 렌더링 //
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-md z-50">
             <div className="bg-black text-white p-8 w-96 border border-[#a9a59f] border-opacity-50">
@@ -73,7 +78,7 @@ export default function LoginModal() {
                         text-[#a9a59f] placeholder-[#a9a59f] placeholder-opacity-50 focus:outline-none"
                     />
 
-                    {/* 🔴 로그인 버튼 클릭 후에만 오류 메시지 표시 */}
+                    {/* 로그인 버튼 클릭 후에만 오류 메시지 표시 */}
                     {showError && (
                         <p className="text-red-500 text-sm">이메일이나 비밀번호가 일치하지 않습니다.</p>
                     )}
@@ -98,3 +103,5 @@ export default function LoginModal() {
         </div>
     );
 }
+
+export default LoginModal;

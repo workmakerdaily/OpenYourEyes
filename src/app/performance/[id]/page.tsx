@@ -4,14 +4,21 @@ import { useParams } from "next/navigation";
 import { usePerformanceDetail } from "@/hooks/usePerformanceDetail";
 import Image from "next/image";
 
+// component: 공연 상세 페이지 //
 export default function PerformanceDetailPage() {
+    
+    // state: URL 파라미터에서 공연 ID 가져오기 //
     const { id } = useParams();
+
+    // state: 공연 상세 데이터 가져오기 //
     const { performance, isLoading, isError } = usePerformanceDetail(id as string);
 
     if (isLoading) return <p className="text-center text-white">로딩 중...</p>;
     if (isError || !performance) return <p className="text-center text-red-500">공연 정보를 불러올 수 없습니다.</p>;
 
     console.log(performance.relates)
+
+    // render: 공연 상세 페이지 UI //
     return (
         <div className="container max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6 mt-20">
             
@@ -33,9 +40,9 @@ export default function PerformanceDetailPage() {
         </div>
     </div>
 
-    {/* 🎭 공연 정보 (유동 크기) */}
+    {/* 공연 정보 (유동 크기) */}
     <div className="flex flex-col gap-6 min-h-[500px]">
-        {/* 🎭 공연 정보 */}
+        {/* 공연 정보 */}
         <div className="flex-1">
             <p className="text-2xl text-[#F8F5F0]"><strong>{performance.prfnm}</strong></p>
             <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-16 opacity-70">장소</span>{performance.fcltynm}</p>
@@ -47,7 +54,7 @@ export default function PerformanceDetailPage() {
             <p className="border-b border-[#2f2f2d] py-2 text-md text-[#a9a59f]"><span className="pr-7 opacity-70">공연 상태</span>{performance.prfstate}</p>
         </div>
 
-        {/* 🎭 출연진 & 제작진 */}
+        {/* 출연진 & 제작진 */}
         {(performance.prfcast || performance.prfcrew) && (
             <div className="flex-1">
                 <h2 className="text-xl font-semibold text-[#C0A36E] border-b border-[#C0A36E] pb-2">출연진 & 제작진</h2>
@@ -56,7 +63,7 @@ export default function PerformanceDetailPage() {
             </div>
         )}
 
-        {/* ⏳ 공연 시간 안내 */}
+        {/* 공연 시간 안내 */}
         {performance.dtguidance && (
             <div className="flex-1">
                 <h2 className="text-xl font-semibold text-[#C0A36E] border-b border-[#C0A36E] pb-2">공연 시간</h2>
@@ -67,7 +74,7 @@ export default function PerformanceDetailPage() {
 </div>
 
 
-            {/* 🎭 추가 이미지 */}
+            {/* 추가 이미지 */}
             {performance.styurls && performance.styurls.length > 0 && (
                 <div className="mt-10">
                     <h2 className="text-2xl font-semibold text-[#C0A36E] border-b border-[#C0A36E] pb-2">공연 이미지</h2>
@@ -86,7 +93,7 @@ export default function PerformanceDetailPage() {
                 </div>
             )}
 
-            {/* 🎟 예매 링크 */}
+            {/* 예매 링크 */}
             {performance.relates && performance.relates.length > 0 && (
                 <div className="mt-10">
                     <h2 className="text-2xl font-semibold text-[#C0A36E] border-b border-[#C0A36E] pb-2">예매 링크</h2>

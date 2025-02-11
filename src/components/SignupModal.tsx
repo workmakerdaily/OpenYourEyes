@@ -5,17 +5,20 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useModalStore } from "@/store/modalStore";
 
-// Zustand를 활용한 상태 관리
+// component: 회원가입 모달 //
+const SignupModal = () => {
 
-export default function SignupModal() {
+    // state: 모달 상태 //
     const { isSignupOpen, closeSignup, openLogin } = useModalStore();
+
+    // state: 입력값 //
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [_error, setError] = useState("");
 
-    // 유효성 검사 상태 (Blur 발생 시 활성화)
+    // state: 유효성 검사 활성화 여부 //
     const [touched, setTouched] = useState({
         name: false,
         email: false,
@@ -23,22 +26,22 @@ export default function SignupModal() {
         passwordConfirm: false,
     });
 
-    // 이메일 형식 확인 (간단한 정규식)
+    // variable: 이메일 형식 유효성 검사 //
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-    // 비밀번호 길이 검사 (최소 6자 이상) + 강도 검사
+    // variable: 비밀번호 유효성 검사 (최소 6자 + 영문 대소문자 + 숫자 포함) //
     const isPasswordValid = password.length >= 6 && /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password);
 
-    // 비밀번호 확인 검사
+    // variable: 비밀번호 확인 일치 여부 //
     const isPasswordMatched = password === passwordConfirm && password.length > 0;
 
-    // 이름 입력 여부 확인
+    // variable: 이름 입력 여부 //
     const isNameEntered = name.trim() !== "";
 
-    // 모든 조건이 충족되면 회원가입 가능
+    // variable: 모든 조건이 충족되면 회원가입 가능 //
     const isValid = isValidEmail && isPasswordValid && isPasswordMatched && isNameEntered;
 
-    // 회원가입 버튼 클릭
+    // event handler: 회원가입 처리 //
     const handleSignup = async () => {
         if (password !== passwordConfirm) {
             setError("비밀번호가 일치하지 않습니다.");
@@ -56,15 +59,16 @@ export default function SignupModal() {
             openLogin(); // 로그인 모달 열기
         } catch (error) {
             if (error instanceof Error) {
-                setError(error.message); // ✅ error가 Error 객체인 경우 message를 설정
+                setError(error.message); // error가 Error 객체인 경우 message를 설정
             } else {
-                setError("회원가입 중 예상치 못한 오류가 발생했습니다."); // ✅ 기본적인 예외 처리
+                setError("회원가입 중 예상치 못한 오류가 발생했습니다."); // 기본적인 예외 처리
             }
         }
     };
 
     if (!isSignupOpen) return null;
 
+    // render: 회원가입 모달 렌더링 //
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-md z-50">
             <div className="bg-black text-white p-6 w-96 border border-[#a9a59f] border-opacity-50">
@@ -154,3 +158,5 @@ export default function SignupModal() {
         </div>
     );
 }
+
+export default SignupModal;

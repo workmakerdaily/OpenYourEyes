@@ -7,14 +7,19 @@ import { ChevronUp } from "lucide-react";
 import { ProducerCard } from "@/components/ProducerCard";
 import { Producer } from "@/types";
 
-// 🔹 API 요청 함수
+// function: API 요청을 위한 fetcher 함수 //
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
+// component: 제작사 목록 페이지 //
 export default function ProducersPage() {
+
+    // state: 검색어 상태 //
     const [searchTerm, setSearchTerm] = useState("");
+
+    // state: 스크롤 상단 이동 버튼 표시 여부 //
     const [showScrollTop, setShowScrollTop] = useState(false);
 
-    // 🔹 SWR Infinite Key 설정 (페이지네이션 적용)
+    // function: SWR Infinite Key 설정 (페이지네이션 적용) //
     const getKey = (pageIndex: number, previousPageData: Producer[]) => {
         if (previousPageData && previousPageData.length === 0) return null;
         const queryParams = new URLSearchParams({
@@ -25,20 +30,21 @@ export default function ProducersPage() {
         return `/api/kopis?${queryParams}`;
     };
 
+    // state: SWR을 이용한 데이터 요청 //
     const { data, size, setSize, isValidating } = useSWRInfinite(getKey, fetcher);
     const allProducers = data ? [].concat(...data) : [];
 
-    // 🔹 클라이언트 검색 필터 적용
+    // function: 클라이언트 검색 필터 적용 //
     const filteredProducers = allProducers.filter((producer: Producer) =>
         producer.entrpsnm?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // 🔹 검색어 변경 시 디바운스 적용
+    // event handler: 검색어 변경 시 디바운스 적용 //
     const handleSearchChange = debounce((value: string) => {
         setSearchTerm(value);
     }, 500);
 
-    // 🔹 Intersection Observer (무한 스크롤 감지)
+    // function: Intersection Observer (무한 스크롤 감지) //
     const observerRef = useRef<IntersectionObserver | null>(null);
     
     const lastElementRef = (node: HTMLDivElement | null) => {
@@ -52,6 +58,7 @@ export default function ProducersPage() {
         if (node) observerRef.current.observe(node);
     };
 
+    // effect: 스크롤 상태 감지 //
     useEffect(() => {
         const handleScroll = () => {
             setShowScrollTop(window.scrollY > 300);
@@ -60,11 +67,12 @@ export default function ProducersPage() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // 🔹 화면 맨 위로 스크롤하는 함수
+    // function: 화면 맨 위로 스크롤 //
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
+    // render: 제작사 목록 페이지 렌더링 //
     return (
         <div className="container max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6 mt-20">
             <h1 className="title-font text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-thin mb-8 text-[#F8F5F0]">

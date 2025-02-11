@@ -1,3 +1,4 @@
+// interface: 공연 상세정보 타입 인터페이스 //
 export interface PerformanceDetail {
     mt20id: string; // 공연 ID
     prfnm: string; // 공연명

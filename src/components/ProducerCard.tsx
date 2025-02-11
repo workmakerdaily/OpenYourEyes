@@ -3,13 +3,17 @@
 import { Producer } from "@/types";
 import { forwardRef } from "react";
 
+// interface: ProducerCardProps 인터페이스 //
 interface ProducerProps {
     producer: Producer;
 }
 
-// ✅ `forwardRef`를 사용하여 ref를 `div`에 전달
+// component: 제작사 카드 //
 export const ProducerCard = forwardRef<HTMLDivElement, ProducerProps>((props , ref) => {
+
     const { producer } = props;
+
+    // variable: 홈페이지 링크 유효성 검사 //
     const relateurl = producer.relateurl?.trim(); // 🔹 공백 제거
     const isValidUrl = relateurl && relateurl !== "-" && relateurl !== "";
 
@@ -29,7 +33,7 @@ export const ProducerCard = forwardRef<HTMLDivElement, ProducerProps>((props , r
 
             <p className="text-sm text-[#a9a59f]"><strong>장르:</strong> {producer.genrenm || "정보 없음"}</p>
 
-            {/* 🔹 홈페이지 링크가 `"-"`, 빈 값 `""`, 공백 `" "`이 아닐 때만 표시 */}
+            {/* 홈페이지 링크가 `"-"`, 빈 값 `""`, 공백 `" "`이 아닐 때만 표시 */}
             {isValidUrl && (
                 <a
                     href={relateurl}

@@ -1,3 +1,4 @@
+// interface: 공연 순위 타입 인터페이스 //
 export interface TopPerformance {
     mt20id: string;  // 공연 ID
     prfnm: string;   // 공연명

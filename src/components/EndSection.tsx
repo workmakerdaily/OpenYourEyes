@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 
-export default function EndSection() {
+// component: 마지막 섹션 //
+const EndSection = () => {
+
+    // render: 마지막 섹션 렌더링링 //
     return (
         <section className="relative bg-[#1a1a1a] text-white py-40 text-center">
             <div className="max-w-4xl mx-auto">
@@ -32,3 +35,5 @@ export default function EndSection() {
         </section>
     );
 }
+
+export default EndSection;

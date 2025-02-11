@@ -1,3 +1,4 @@
+// interface: 공연시설 타입 인터페이스 //
 export interface Venue {
     mt10id: string;        // 공연시설 ID
     fcltynm: string;       // 공연시설명

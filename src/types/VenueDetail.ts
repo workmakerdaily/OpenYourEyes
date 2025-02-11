@@ -1,3 +1,4 @@
+// interface: 공연시설 상세정보 타입 인터페이스 //
 export interface VenueDetail {
     id: string; // 공연시설 ID
     fcltynm: string; // 공연시설명
@@ -22,8 +23,6 @@ export interface VenueDetail {
     parkinglot: boolean; // 주차시설 여부
     mt13s: VenueStage[]; // 공연장 목록 (배열)
 }
-
-// 공연장 상세 목록
 export interface VenueStage {
     prfplcnm: string; // 공연장명
     mt13id: string; // MT13_ID (고유식별 ID)

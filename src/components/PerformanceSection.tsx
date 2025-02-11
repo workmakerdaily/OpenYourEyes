@@ -5,25 +5,34 @@ import { usePerformancesByDate } from "@/hooks/usePerformancesByDate";
 import { Performance } from "@/types";
 import Image from "next/image";
 
-// ✅ 한국 시간(KST) 변환 함수
+// function: 한국 시간 변환 //
 const convertToKST = (date: Date) => {
     const kstOffset = 9 * 60;
     return new Date(date.getTime() + kstOffset * 60 * 1000);
 };
 
-export default function PerformanceSection() {
+// component: 공연 섹션 //
+const PerformanceSection = () => {
+
+    // state: 오늘 날짜 기본값 설정 //
     const today = convertToKST(new Date()).toISOString().split("T")[0];
     const [selectedDate, setSelectedDate] = useState<string>(today);
+
+    // state: 공연 데이터 가져오기 //
     const { performances, isLoading } = usePerformancesByDate(selectedDate);
 
+    // state: 날짜 리스트 및 스크롤 컨테이너 참조 //
     const dateScrollRef = useRef<HTMLDivElement | null>(null);
     const perfScrollRef = useRef<HTMLDivElement | null>(null);
 
+    // variable: 현재 선택된 연도와 월 //
     const year = selectedDate.split("-")[0];
     const month = selectedDate.split("-")[1];
 
+    // variable: 요일 리스트 //
     const daysOfWeek = useMemo(() => ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"], []);
 
+    // state: 날짜 목록 //
     const [dates, setDates] = useState<{ 
         day: number; 
         fullDate: string; 
@@ -32,6 +41,7 @@ export default function PerformanceSection() {
         hasPerformance: boolean; 
     }[]>([]);
 
+    // effect: 선택한 달의 날짜 목록 생성 //
     useEffect(() => {
         const generateDatesOfMonth = () => {
             const newDates = [];
@@ -57,6 +67,7 @@ export default function PerformanceSection() {
         generateDatesOfMonth();
     }, [year, month, daysOfWeek, today]); // ✅ 빠진 의존성 추가
 
+    // effect: 공연 데이터가 있으면 날짜에 반영 //
     useEffect(() => {
         if (!isLoading) {
             setDates((prevDates) =>
@@ -75,7 +86,7 @@ export default function PerformanceSection() {
         }
     }, [performances, isLoading]);
 
-    // ✅ 마우스 휠을 이용해 가로 스크롤 가능하게 만들기 (useEffect에서 직접 호출)
+    // effect: 가로 스크롤 (날짜 선택) //
     useEffect(() => {
         const scrollContainer = dateScrollRef.current;
         if (!scrollContainer) return;
@@ -93,8 +104,9 @@ export default function PerformanceSection() {
         return () => {
             scrollContainer.removeEventListener("wheel", handleWheelScroll);
         };
-    }, []); // ✅ enableHorizontalScroll 제거하고 useEffect에서 직접 적용
+    }, []);
 
+    // effect: 가로 스크롤 (공연 목록) //
     useEffect(() => {
         const scrollContainer = perfScrollRef.current;
         if (!scrollContainer) return;
@@ -106,26 +118,25 @@ export default function PerformanceSection() {
                 behavior: "smooth",
             });
         };
-    
-        // ✅ 이벤트 핸들러 추가 및 정리
+
         scrollContainer.addEventListener("wheel", handleWheelScroll, { passive: false });
     
         return () => {
             scrollContainer.removeEventListener("wheel", handleWheelScroll);
         };
-    }, [perfScrollRef.current]); // ✅ 종속성 배열에 ref의 current 값 추가
+    }, [perfScrollRef.current]);
     
-
+    // render: 공연 섹션 렌더링 //
     return (
         <section className="bg-[#F8F5F0] text-black py-10">
             <div className="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6">
                 
-                {/* 🗓 연도 및 월 표시 */}
+                {/* 연도 및 월 표시 */}
                 <header className="flex items-center justify-between mb-6">
                     <h2 className="text-3xl font-semibold">{year}.{month}</h2>
                 </header>
 
-                {/* 📅 요일 및 날짜 선택 */}
+                {/* 요일 및 날짜 선택 */}
                 <div 
                     ref={dateScrollRef} 
                     className="flex gap-4 overflow-x-auto scrollbar-hide pb-4"
@@ -150,7 +161,7 @@ export default function PerformanceSection() {
                     ))}
                 </div>
 
-                {/* 🎭 선택한 날짜의 공연 목록 */}
+                {/* 선택한 날짜의 공연 목록 */}
                 <div className="mt-6 min-h-[360px]">
                     {isLoading ? (
                         <div className="flex gap-6 overflow-x-auto scrollbar-hide">
@@ -192,3 +203,5 @@ export default function PerformanceSection() {
         </section>
     );
 }
+
+export default PerformanceSection;

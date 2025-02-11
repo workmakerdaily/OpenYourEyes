@@ -5,10 +5,14 @@ import { useBoxOfficeByDate } from "@/hooks/useBoxOfficeByDate";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
+// component: 박스오피스 섹션 //
 const BoxOffice = () => {
+
+    // state: 박스오피스 데이터 가져오기 //
     const { boxOffice, isLoading, isError } = useBoxOfficeByDate();
     const [isVisible, setIsVisible] = useState(false);
 
+    // effect: 스크롤 이벤트 감지하여 애니메이션 활성화 //
     useEffect(() => {
         const handleScroll = () => {
             const section = document.getElementById("box-office-section");
@@ -26,14 +30,16 @@ const BoxOffice = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    // event handler: 데이터 로딩 및 오류 처리 //
     if (isError) return <p className="text-red-500">데이터를 불러오는 중 오류 발생</p>;
     if (isLoading) return <p className="text-gray-500">로딩 중...</p>;
 
-    // ✅ `rnum` 기준으로 오름차순 정렬 후 상위 3개만 가져오기
+    // function: `rnum` 기준으로 정렬 후 상위 3개만 가져오기 //
     const topPerformances = [...boxOffice]
         .sort((a, b) => Number(a.rnum) - Number(b.rnum))
         .slice(0, 3);
 
+    // render: 박스오피스 섹션 렌더링 //
     return (
         <section
             id="box-office-section"

@@ -1,32 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
 import { parseStringPromise } from "xml2js";
 
+// variable: API 기본 설정 //
 const BASE_URL = "http://kopis.or.kr/openApi/restful";
-const SERVICE_KEY = process.env.NEXT_PUBLIC_KOPIS_API_KEY; // 환경 변수에서 API 키 가져오기
+const SERVICE_KEY = process.env.NEXT_PUBLIC_KOPIS_API_KEY;
 
+// function: 공연장을 가져오기기 API //
 export async function GET(
-    req: NextRequest,
-    context: { params: { id: string } } // ✅ 명확한 타입 정의
+    _req: NextRequest,
+    context: { params: { id: string } }
 ) {
-    const { id } = context.params; // ✅ 동기적으로 params.id 접근
+    // variable: API 요청에 필요한 공연장 ID //
+    const { id } = context.params;
 
     if (!id) {
         return NextResponse.json({ error: "Invalid venue ID" }, { status: 400 });
     }
 
     try {
+        // variable: KOPIS API 요청 URL //
         const apiUrl = `${BASE_URL}/prfplc/${id}?service=${SERVICE_KEY}`;
-        console.log("🔹 Fetching URL:", apiUrl); // ✅ API 요청 URL 확인
+        console.log("🔹 Fetching URL:", apiUrl);
 
         const response = await fetch(apiUrl);
         if (!response.ok) {
             return NextResponse.json({ error: `KOPIS API Error: ${response.status}` }, { status: response.status });
         }
 
+        // variable: XML 응답 데이터를 JSON으로 변환 //
         const xmlText = await response.text();
         const jsonData = await parseStringPromise(xmlText, { explicitArray: false });
 
-        console.log("🔹 API Response Data:", jsonData); // ✅ API 응답 확인
+        console.log("🔹 API Response Data:", jsonData);
 
         const venue = jsonData?.dbs?.db;
         if (!venue) {

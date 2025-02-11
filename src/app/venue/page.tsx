@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { ChevronUp } from "lucide-react";
 
 
-// ✅ 지역 코드 매핑
+// description: 지역 코드 매핑 //
 const areaMapping: Record<string, string> = {
     "서울": "11",
     "부산": "26",
@@ -28,24 +28,33 @@ const areaMapping: Record<string, string> = {
     "제주": "50",
 };
 
-// ✅ 지역 옵션 리스트 (전체 포함)
+// description: 지역 옵션 리스트 //
 const areaOptions = [
     { label: "전체", value: "" },
     ...Object.keys(areaMapping).map((label) => ({ label, value: label })),
 ];
 
+// component: 공연장 목록 페이지 //
 export default function VenuesPage() {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [area, setArea] = useState(""); // ✅ 지역 필터 변수명 변경
-    const router = useRouter(); // ✅ 상세 페이지 이동을 위한 Next.js useRouter
 
+    // state: 검색어 및 지역 필터 상태 //
+    const [searchTerm, setSearchTerm] = useState("");
+    const [area, setArea] = useState("");
+
+     // state: Next.js 라우터 //
+    const router = useRouter();
+
+     // state: 공연장 목록 데이터 //
     const { venues, isLoading, isError, isValidating, loadMore } = useVenuesByDate(searchTerm);
 
-    const observerRef = useRef<IntersectionObserver | null>(null);
-    const lastElementRef = useRef<HTMLTableRowElement | null>(null);
+    // state: 스크롤 상단 이동 버튼 표시 여부 //
     const [showScrollTop, setShowScrollTop] = useState(false);
 
-    // 🔹 Intersection Observer 설정 (무한 스크롤)
+    // ref: Intersection Observer 관련 Ref //
+    const observerRef = useRef<IntersectionObserver | null>(null);
+    const lastElementRef = useRef<HTMLTableRowElement | null>(null);
+
+    // effect: Intersection Observer 설정 (무한 스크롤) //
     useEffect(() => {
         if (isValidating) return;
         if (observerRef.current) observerRef.current.disconnect();
@@ -59,6 +68,7 @@ export default function VenuesPage() {
         if (lastElementRef.current) observerRef.current.observe(lastElementRef.current);
     }, [isValidating, loadMore]);
 
+    // effect: 스크롤 상태 감지 //
     useEffect(() => {
         const handleScroll = () => {
             setShowScrollTop(window.scrollY > 300);
@@ -67,25 +77,28 @@ export default function VenuesPage() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    // event handler: 검색어 변경 시 디바운스 적용 //
     const handleSearchChange = debounce((value: string) => {
         setSearchTerm(value);
     }, 500);
 
+    // event handler: 지역 필터 변경 //
     const handleAreaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setArea(event.target.value);
     };
 
-    // 🔹 공연장명 + 지역(시도, 구군) 필터링 적용
+    // function: 공연장명 + 지역(시도, 구군) 필터링 적용 //
     const filteredVenues = venues.filter((venue) =>
         (searchTerm ? venue.fcltynm.includes(searchTerm) || venue.sidonm.includes(searchTerm) || venue.gugunnm.includes(searchTerm) : true) &&
         (area ? venue.sidonm === area : true)
     );
 
-    // 🔹 화면 맨 위로 스크롤하는 함수
+    // function: 화면 맨 위로 스크롤 //
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
+    // render: 공연장 목록 페이지 렌더링 //
     return (
         <div className="container max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6 mt-20">
             <h1 className="title-font text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-thin mb-8 text-[#F8F5F0]">Venue</h1>

@@ -7,7 +7,7 @@ import { debounce } from "@/utils/debounce";
 import { ChevronUp } from "lucide-react";
 import { Performance } from "@/types";
 
-// ✅ 장르 코드 매핑
+// description: 장르 코드 매핑 //
 const genreMapping: Record<string, string> = {
     "연극": "AAAA",
     "무용(서양/한국무용)": "BBBC",
@@ -20,6 +20,7 @@ const genreMapping: Record<string, string> = {
     "뮤지컬": "GGGA",
 };
 
+// description: 지역 코드 매핑 //
 const areaMapping: Record<string, string> = {
     "서울특별시": "11",
     "부산광역시": "26",
@@ -40,16 +41,15 @@ const areaMapping: Record<string, string> = {
     "제주특별자치도": "50",
 }
 
+// description: 필터 옵션 생성 //
 const genreOptions = [
     { label: "전체", value: "" },
     ...Object.entries(genreMapping).map(([label, value]) => ({ label, value })),
 ];
-
 const areaOptions = [
     { label: "전체", value: "" },
     ...Object.entries(areaMapping).map(([label, value]) => ({ label, value })),
 ];
-
 const statusOptions = [
     { label: "전체", value: "" },
     { label: "공연예정", value: "공연예정" },
@@ -57,6 +57,7 @@ const statusOptions = [
     { label: "공연완료", value: "공연완료" },
 ];
 
+// function: 이번 달의 시작일과 마지막일을 반환 //
 const getCurrentMonthRange = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -72,19 +73,23 @@ const getCurrentMonthRange = () => {
     return { firstDay, lastDay: lastDayFormatted };
 };
 
-
+// function: 데이터 요청을 위한 fetcher 함수 //
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
+// component: 공연 목록 페이지 //
 export default function PerformancesPage() {
+
+    // state: 이번 달의 공연 데이터 날짜 범위 //
     const { firstDay: stdate, lastDay: eddate } = getCurrentMonthRange();
+
+    // state: 검색 및 필터 상태 //
     const [searchTerm, setSearchTerm] = useState("");
     const [genre, setGenre] = useState("");     // 장르 필터
     const [area, setArea] = useState("");       // 지역 필터
     const [status, setStatus] = useState("");   // 상태 필터
-
     const [showScrollTop, setShowScrollTop] = useState(false);
 
-    // 🔹 SWR Infinite Key 설정 (필터만 API 요청)
+    // function: SWR Infinite Key 설정 (필터만 API 요청) //
     const getKey = (pageIndex: number, previousPageData: Performance[] | null) => {
         if (previousPageData && previousPageData.length === 0) return null;
 
@@ -101,10 +106,11 @@ export default function PerformancesPage() {
         return `/api/kopis?${queryParams}`;
     };
 
+    // state: 공연 데이터 요청 //
     const { data, size, setSize, isValidating } = useSWRInfinite(getKey, fetcher);
     const allPerformances = data ? [].concat(...data) : [];
 
-    // 🔹 클라이언트에서 공연명, 시설명, 장르 필터링 적용
+    // function: 클라이언트에서 공연명, 시설명, 장르 필터링 //
     const filteredPerformances = allPerformances.filter((performance: Performance) => {
         const matchSearch =
             performance.prfnm.includes(searchTerm) || performance.fcltynm.includes(searchTerm);
@@ -114,12 +120,12 @@ export default function PerformancesPage() {
         return matchSearch && matchGenre && matchArea && matchStatus;
     });
 
-    // 🔹 검색어 변경 시 필터링 (디바운스 적용)
+    // event handler: 검색어 변경 시 필터링 (디바운스 적용) //
     const handleSearchChange = debounce((value: string) => {
         setSearchTerm(value);
     }, 500);
 
-    // 🔹 장르 필터 변경 시 전체 선택 처리
+    // event handler: 필터 변경 //
     const handleGenreChange = (value: string) => {
         setGenre(value);
         setSize(1);
@@ -128,7 +134,7 @@ export default function PerformancesPage() {
             setGenre("");
         }
     };
-
+    // event handler: 필터 변경 //
     const handleAreaChange = (value: string) => {
         setArea(value);
         setSize(1);
@@ -137,7 +143,7 @@ export default function PerformancesPage() {
             setArea("");
         }
     };
-
+    // event handler: 필터 변경 //
     const handleStatusChange = (value: string) => {
         setStatus(value);
         setSize(1);
@@ -148,7 +154,7 @@ export default function PerformancesPage() {
     };
     
 
-    // 🔹 Intersection Observer (무한 스크롤)
+    // function: Intersection Observer (무한 스크롤) //
     const observerRef = useRef<IntersectionObserver | null>(null);
     const lastElementRef = useCallback(
         (node: HTMLDivElement) => {
@@ -164,6 +170,7 @@ export default function PerformancesPage() {
         [isValidating, setSize, size]
     );
 
+    // effect: 스크롤 상태 감지 //
     useEffect(() => {
         const handleScroll = () => {
             setShowScrollTop(window.scrollY > 300); // 300px 이상 스크롤 시 버튼 표시
@@ -172,11 +179,12 @@ export default function PerformancesPage() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // 🔹 화면 맨 위로 스크롤하는 함수
+    // function: 화면 맨 위로 스크롤 //
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
+    // render: 공연 목록 페이지 렌더링 //
     return (
         <div className="container max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6 mt-20">
             <h1 className="title-font text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-thin mb-8 text-[#F8F5F0]">Performance</h1>
