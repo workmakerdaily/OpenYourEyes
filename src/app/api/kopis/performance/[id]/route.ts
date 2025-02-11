@@ -2,18 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { parseStringPromise } from "xml2js";
 
 // ✅ Next.js 15에서 API Route의 params 타입을 명확히 선언
-export interface RouteContext {
-    params: { id: string };
-}
 
 const BASE_URL = "http://kopis.or.kr/openApi/restful";
 const SERVICE_KEY = process.env.NEXT_PUBLIC_KOPIS_API_KEY; // 환경 변수에서 API 키 가져오기
 
 export async function GET(
-    req: NextRequest,
-    context: RouteContext // ✅ Next.js의 기대 타입과 일치하도록 지정
+    _req: NextRequest,
+    { params }: { params: { id: string } } 
 ) {
-    const { id } = context.params;
+    const { id } = params;
+
 
     if (!id) {
         return NextResponse.json({ error: "Invalid performance ID" }, { status: 400 });
