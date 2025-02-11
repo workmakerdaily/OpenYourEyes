@@ -3,6 +3,7 @@
 import Banner from "@/components/Banner";
 import PerformanceSection from "@/components/PerformanceSection";
 import BoxOfficeSection from "@/components/BoxOfficeSection";
+import EndSection from "@/components/EndSection";
 
 export default function Home() {
 
@@ -11,8 +12,9 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <Banner />
-      <BoxOfficeSection date={today} />
       <PerformanceSection />
+      <BoxOfficeSection date={today} />
+      <EndSection />
     </main>
   );
 }

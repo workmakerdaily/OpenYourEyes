@@ -1,10 +1,10 @@
-export function debounce<T extends (...args: unknown[]) => void>(func: T, delay: number) {
+export function debounce<T extends (arg: string) => void>(func: T, delay: number) {
     let timer: NodeJS.Timeout;
-    
-    return (...args: Parameters<T>) => {
+
+    return (arg: string) => {
         clearTimeout(timer);
         timer = setTimeout(() => {
-            func(...args);
+            func(arg);
         }, delay);
     };
 }

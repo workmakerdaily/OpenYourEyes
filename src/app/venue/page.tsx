@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useVenuesByDate } from "@/hooks/useVenuesByDate";
 import { debounce } from "@/utils/debounce";
 import { useRouter } from "next/navigation";
+import { ChevronUp } from "lucide-react";
 
 
 // ✅ 지역 코드 매핑
@@ -42,6 +43,7 @@ export default function VenuesPage() {
 
     const observerRef = useRef<IntersectionObserver | null>(null);
     const lastElementRef = useRef<HTMLTableRowElement | null>(null);
+    const [showScrollTop, setShowScrollTop] = useState(false);
 
     // 🔹 Intersection Observer 설정 (무한 스크롤)
     useEffect(() => {
@@ -57,6 +59,14 @@ export default function VenuesPage() {
         if (lastElementRef.current) observerRef.current.observe(lastElementRef.current);
     }, [isValidating, loadMore]);
 
+    useEffect(() => {
+        const handleScroll = () => {
+            setShowScrollTop(window.scrollY > 300);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
     const handleSearchChange = debounce((value: string) => {
         setSearchTerm(value);
     }, 500);
@@ -70,6 +80,11 @@ export default function VenuesPage() {
         (searchTerm ? venue.fcltynm.includes(searchTerm) || venue.sidonm.includes(searchTerm) || venue.gugunnm.includes(searchTerm) : true) &&
         (area ? venue.sidonm === area : true)
     );
+
+    // 🔹 화면 맨 위로 스크롤하는 함수
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
     return (
         <div className="container max-w-screen-xl mx-auto px-4 md:px-8 lg:px-6 mt-20">
@@ -128,6 +143,18 @@ export default function VenuesPage() {
 
             {isLoading && <p className="text-center text-white mt-4">로딩 중...</p>}
             {isError && <p className="text-center text-red-500 mt-4">데이터를 불러오는 중 오류가 발생했습니다.</p>}
+        
+            {showScrollTop && (
+                <button
+                    onClick={scrollToTop}
+                    className="fixed bottom-4 right-4 bg-[#F8F5F0] text-black p-3 rounded-full shadow-lg hover:opacity-70 transition"
+                >
+                    <ChevronUp size={24} />
+                </button>
+            )}
+        
         </div>
+
+        
     );
 }
