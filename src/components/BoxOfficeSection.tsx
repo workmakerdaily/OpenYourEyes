@@ -51,7 +51,7 @@ const BoxOffice = () => {
                     initial={{ opacity: 0, y: 50 }}
                     animate={isVisible ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 1, ease: "easeOut" }}
-                    className="absolute min-sm:relative min-sm:mb-10 inset-0 flex flex-col items-center custom-sm:gap-0 custom-md:gap-44 md:gap-44 lg:gap-36 justify-center text-white font-bold z-0"
+                    className="relative mb-10 min-sm:mb-0 min-sm:absolute inset-0 flex flex-col items-center custom-sm:gap-0 custom-md:gap-44 md:gap-44 lg:gap-36 justify-center text-white font-bold z-0"
                 >
                     <h2 className="title-font text-[clamp(3rem,8vw,8rem)] tracking-[clamp(0.5rem,3vw,3.5rem)] leading-none">
                         TOP BOX

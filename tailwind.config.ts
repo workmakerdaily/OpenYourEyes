@@ -15,7 +15,7 @@ export default {
       screens: {
         "custom-md": "737px",
         "custom-sm": "736px",
-        "min-sm": "480px"
+        "min-sm": "481px"
       },
     },
   },
