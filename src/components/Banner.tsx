@@ -88,7 +88,7 @@ const Banner = () => {
                 className="relative z-10 text-center"
             >
                 {/* 🎭 타이핑 효과 (Letter Reveal) 적용 */}
-                <h1 className="text-5xl md:text-7xl font-bold tracking-widest uppercase">
+                <h1 className="text-3xl min-sm:text-4xl sm:text-6xl md:text-7xl font-bold tracking-widest uppercase">
                     {title.split("").map((char, i) => (
                         <motion.span
                             key={i}
@@ -101,7 +101,7 @@ const Banner = () => {
                         </motion.span>
                     ))}
                 </h1>
-                <p className="mt-4 text-lg md:text-xl font-light">
+                <p className="mt-4 text-sm min-sm:text-base sm:text-lg md:text-xl font-light">
                     전례 없는 공연 예술의 세계를 경험해 보세요.
                 </p>
             </motion.div>
